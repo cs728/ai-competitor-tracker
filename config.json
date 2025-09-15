@@ -11,10 +11,22 @@
     {
       "name": "Google AI",
       "url": "https://blog.google/technology/ai/",
-      "selector": "article, .uni-article-card",
-      "title_selector": "h2, h3, .uni-article-card__title",
-      "date_selector": "time, .uni-article-card__date",
-      "content_selector": "p, .uni-article-card__excerpt"
+      "selector": "article, .uni-article-card, div.glue-grid__col, div[class*='article'], a[href*='/technology/ai/']",
+      "title_selector": "h2, h3, h4, .uni-article-card__title, .headline, [class*='title']",
+      "date_selector": "time, .uni-article-card__date, [datetime], [class*='date']",
+      "content_selector": "p, .uni-article-card__excerpt, [class*='excerpt'], [class*='summary']",
+      "use_custom_scraper": true,
+      "scraper_module": "google_scraper"
+    },
+    {
+      "name": "DeepMind",
+      "url": "https://deepmind.google/discover/blog/",
+      "selector": "article, div[class*='post'], div[class*='blog'], a[href*='/blog/']",
+      "title_selector": "h2, h3, a[href*='/blog/']",
+      "date_selector": "time, [class*='date']",
+      "content_selector": "p, [class*='summary']",
+      "use_custom_scraper": true,
+      "scraper_module": "google_scraper"
     },
     {
       "name": "Microsoft AI",
