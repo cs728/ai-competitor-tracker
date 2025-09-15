@@ -84,6 +84,10 @@ class CompetitorScraper:
         name = competitor.get('name')
         url = competitor.get('url')
 
+        # Check if custom scraper should be used
+        if competitor.get('use_custom_scraper'):
+            return self._use_custom_scraper(competitor)
+
         logger.info(f"Scraping {name}: {url}")
 
         try:
@@ -157,6 +161,40 @@ class CompetitorScraper:
             logger.debug(f"Error extracting article data: {e}")
 
         return None
+
+    def _use_custom_scraper(self, competitor: Dict) -> Optional[Dict]:
+        """Use a custom scraper module for specific competitors"""
+        scraper_module = competitor.get('scraper_module')
+        name = competitor.get('name')
+
+        try:
+            if scraper_module == 'google_scraper':
+                from google_scraper import GoogleAIScraper
+                google_scraper = GoogleAIScraper()
+
+                if name == 'Google AI':
+                    return google_scraper.scrape_google_ai_blog()
+                elif name == 'DeepMind':
+                    return google_scraper.scrape_deepmind()
+
+            # Fallback to default scraping
+            logger.warning(f"Custom scraper not found for {name}, using default")
+            competitor['use_custom_scraper'] = False
+            return self.scrape_website(competitor)
+
+        except ImportError as e:
+            logger.error(f"Error importing custom scraper: {e}")
+            competitor['use_custom_scraper'] = False
+            return self.scrape_website(competitor)
+        except Exception as e:
+            logger.error(f"Error using custom scraper for {name}: {e}")
+            return {
+                'competitor': name,
+                'url': competitor.get('url'),
+                'timestamp': datetime.now().isoformat(),
+                'error': str(e),
+                'articles': []
+            }
 
     def scrape_all(self) -> List[Dict]:
         """Scrape all configured competitor websites"""
